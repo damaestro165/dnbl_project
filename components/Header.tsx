@@ -58,7 +58,7 @@ function Header() {
       <Link href={href}>
         <Image src={iconSrc} width={32} height={32} alt="" />
         {notificationCount !== null && (
-          <span className="w-[16.5px] h-[16.5px] rounded-[33px] p-[4.4px] flex items-center justify-center flex-col bg-[#C51818] font-inter text-[11px] font-normal text-white text-center tracking-[-0.33px] absolute top-0 -right-0">
+          <span className="w-[16.5px] h-[16.5px] rounded-[33px] p-[4.4px] flex items-center justify-center flex-col bg-[#C51818] font-inter text-[11px] font-normal text-white text-center tracking-[-0.33px] absolute top-0 right-0">
             {notificationCount}
           </span>
         )}
