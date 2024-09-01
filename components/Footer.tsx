@@ -27,7 +27,7 @@ function Footer() {
   const pathname = usePathname();
 
   return (
-    <footer className='bg-[#1E1E1E] px-[5%] lg:pt-[68px] py-10 lg:pb-[113px] xl:px-[105px] relative'>
+    <footer className='bg-[#1E1E1E] px-[5%] lg:pt-[68px] py-10 lg:pb-[113px] xl:px-[105px] relative '>
       <div className='flex flex-col lg:flex-row gap-16 2xl:gap-[156px] xl:items-center mb-5'>
         <div className='grid gap-8 lg:gap-0 xl:gap-8'>
         <Link href={"/"} className="shrink-0">

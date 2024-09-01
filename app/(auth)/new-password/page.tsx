@@ -76,7 +76,7 @@ function NewPassword() {
   return (
     <section className="flex min-h-screen items-center justify-center bg-white shrink-0">
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-[133px] w-full justify-center items-center xl:justify-start bg-white sm:p-5">
-        <div className="max-lg:hidden relative rounded-3xl overflow-hidden max-w-full md:max-w-[50%] lg:max-w-[50%]">
+        <div className="max-lg:hidden relative rouynded-3xl overflow-hidden max-w-full md:max-w-[50%] lg:max-w-[50%]">
           <Image
             src="/assets/signIn-banner.png"
             alt="DNBL Fashion"

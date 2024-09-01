@@ -1,14 +1,14 @@
-"use client";
+import ConfirmationMessage from '@/components/auth/ConfirmationMessage';
+import Image from 'next/image';
 
-import LoginForm from "@/components/LoginForm";
-import { Button } from "@/components/ui/button";
-import { signIn } from "next-auth/react";
-import Image from "next/image";
 
-function SignIn() {
-
-	return (
-		<section className="flex min-h-screen items-center justify-center bg-white shrink-0 px-4 md:px-0">
+export default function layout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+<section className="flex lg:min-h-screen items-center justify-center bg-white shrink-0">
 			<div className="flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-[133px] w-full justify-center items-center xl:justify-start bg-white sm:p-5">
 				<div className="max-lg:hidden relative rounded-3xl overflow-hidden max-w-full md:max-w-[50%] lg:max-w-[50%]">
 					<Image
@@ -28,11 +28,8 @@ function SignIn() {
 					/>
 				</div>
 
-				<LoginForm />
-				
+				{children}
 			</div>
 		</section>
-	);
+  );
 }
-
-export default SignIn;

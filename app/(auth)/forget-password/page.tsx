@@ -1,113 +1,109 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { Mail } from "lucide-react";
+import { useFormState } from 'react-dom';
 
-import ButtonPrimary from "@/components/ButtonPrimary";
+import requestPasswordResetAction from '@/components/auth/PasswordResetAction';
+import Image from 'next/image';
+import { Mail } from 'lucide-react';
+import Button from '@/components/Button';
 
-function ForgetPassword() {
-	const [email, setEmail] = useState("");
-	const [errors, setErrors] = useState({ email: "" });
+type InputErrorsT = {
+  email?: string[];
+};
 
-	const validateEmail = (email: string) => {
-		return /\S+@\S+\.\S+/.test(email);
-	};
+type NoErrorFormStateT = {
+  error: false;
+  message?: string;
+};
 
-	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const newEmail = e.target.value;
-		setEmail(newEmail);
-		setErrors((prevErrors) => ({
-			...prevErrors,
-			email: newEmail
-				? validateEmail(newEmail)
-					? ""
-					: "Invalid email format"
-				: "Email is required",
-		}));
-	};
+type ErrorFormStateT = {
+  error: true;
+  message: string;
+  inputErrors?: InputErrorsT;
+};
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
+export type RequestPasswordResetFormStateT = NoErrorFormStateT | ErrorFormStateT;
 
-		const newErrors = {
-			email: email
-				? validateEmail(email)
-					? ""
-					: "Invalid email format"
-				: "Email is required",
-		};
+const initialState: NoErrorFormStateT = {
+  error: false,
+};
 
-		setErrors(newErrors);
+export default function ForgetPassword() {
+  const [state, formAction] = useFormState<RequestPasswordResetFormStateT, FormData>(
+    requestPasswordResetAction,
+    initialState
+  );
 
-		if (!newErrors.email) {
-			// Submit form
-			console.log("Form submitted");
-		}
-	};
+  if (!state.error && state.message === 'Success') {
+    return (
+      <div className="bg-zinc-100 rounded-sm px-4 py-8 mb-8">
+        <h2 className="font-bold text-lg mb-4">Check your email</h2>
+        <p>
+          We sent you an email with a link. Open this link to reset your password. Be careful, it expires soon.
+        </p>
+      </div>
+    );
+  }
 
-	return (
-		<section className="flex min-h-screen items-center justify-center bg-white shrink-0">
-			<div className="flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-[133px] w-full justify-center items-center xl:justify-start bg-white sm:p-5">
-				<div className="max-lg:hidden relative rounded-3xl overflow-hidden max-w-full md:max-w-[50%] lg:max-w-[50%]">
-					<Image
-						src="/assets/signIn-banner.png"
-						alt="DNBL Fashion"
-						width={700}
-						height={984}
-						className="max-w-full w-auto object-cover bg-blend-multiply"
-					/>
-					<div className="absolute inset-0 bg-sign-in-layer"></div>
-					<Image
-						src="/assets/white-logo.png"
-						alt="DNBL Fashion"
-						width={196}
-						height={88}
-						className="max-xl:w-[26%] absolute top-7 left-4 md:left-[28px] z-10"
-					/>
-				</div>
+  return (
+    <section className="flex min-h-screen items-center justify-center bg-white shrink-0">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-[133px] w-full justify-center items-center xl:justify-start bg-white sm:p-5">
+        <div className="max-lg:hidden relative rounded-3xl overflow-hidden max-w-full md:max-w-[50%] lg:max-w-[50%]">
+          {/* Image Section */}
+          <Image
+            src="/assets/signIn-banner.png"
+            alt="DNBL Fashion"
+            width={700}
+            height={984}
+            className="max-w-full w-auto object-cover bg-blend-multiply"
+          />
+          <div className="absolute inset-0 bg-sign-in-layer"></div>
+          <Image
+            src="/assets/white-logo.png"
+            alt="DNBL Fashion"
+            width={196}
+            height={88}
+            className="max-xl:w-[26%] absolute top-7 left-4 md:left-[28px] z-10"
+          />
+        </div>
 
-				<div className="flex-1 w-full max-w-full md:max-w-[400px] px-4 md:px-0">
-					{/* Heading */}
-					<h1 className="heading">Forgot Password</h1>
+        <div className="flex-1 w-full max-w-full md:max-w-[400px] px-4 md:px-0">
+          <h1 className="heading">Forgot Password</h1>
+          <p className="headline">Provide your email to receive a reset code.</p>
 
-					{/* Headline */}
-					<p className="headline">
-						Provide your email to receive a reset code.
-					</p>
+          <form action={formAction} className="my-8">
+            <div className="mb-6">
+              <label htmlFor="email" className="label-heading">Email Address</label>
+              <div className="relative">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className={`w-full p-4 border ${
+                    state.error && state.inputErrors?.email ? "border-error" : "border-gold-border"
+                  } rounded-md text-[#101928] placeholder:text-[#98A2B3] text-[14px] leading-[20.3px] focus:outline-none focus:ring-1 focus:ring-btn-gold`}
+                  placeholder="Enter your email"
+                  required
+                />
+                <span className="absolute inset-y-0 right-0 pr-[18px] flex items-center">
+                  <Mail className="text-gray-light w-5 h-5" />
+                </span>
+              </div>
+              {state.error && state.inputErrors?.email && (
+                <p className="mt-2 text-error text-sm">{state.inputErrors.email[0]}</p>
+              )}
+            </div>
 
-					<form onSubmit={handleSubmit}>
-						<div className="mb-6">
-							{/* Email field */}
-							<label htmlFor="email" className="label-heading">
-								Email Address
-							</label>
-							<div className="relative">
-								<input
-									type="email"
-									id="email"
-									className={`w-full p-4 border ${
-										errors.email ? "border-error" : "border-gold-border"
-									} rounded-md text-[#101928] placeholder:text-[#98A2B3] text-[14px] leading-[20.3px] focus:outline-none focus:ring-1 focus:ring-btn-gold`}
-									placeholder="Enter your email"
-									value={email}
-									onChange={handleEmailChange}
-								/>
-								<span className="absolute inset-y-0 right-0 pr-[18px] flex items-center">
-									<Mail className="text-gray-light w-5 h-5" />
-								</span>
-							</div>
-							{errors.email && (
-								<p className="mt-2 text-error text-sm">{errors.email}</p>
-							)}
-						</div>
+          <Button label='submit'/>
+          </form>
 
-						<ButtonPrimary label="Send Code" />
-					</form>
-				</div>
-			</div>
-		</section>
-	);
+          {state.error && state.message && (
+            <div className="mt-4 text-red-600" aria-live="polite">
+              {state.message}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
-
-export default ForgetPassword;

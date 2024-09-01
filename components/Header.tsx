@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ButtonPrimary from "./ButtonPrimary";
+import { Button } from "./ui/button";
+import { signIn, useSession } from "next-auth/react";
 
 const primaryNavigation = [
   { title: "Home", link: "/" },
@@ -21,7 +23,9 @@ const primaryNavigation = [
   { title: "Favourites", link: "/favourites" },
 ];
 
-function Header() {
+export default function Header() {
+  const { data: session } = useSession(); // Use the `useSession` hook to get the session data
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -35,12 +39,12 @@ function Header() {
       setIsMenuOpen(false);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Helper function for navigation items
-  const NavItem = ({ title, link }) => (
+  const NavItem = ({ title, link }: { title: string; link: string }) => (
     <li
       className={`font-open-sans text-xl font-normal p-[10px] cursor-pointer ${
         pathname === link ? "text-[#231867]" : "text-[#292D32]"
@@ -53,7 +57,15 @@ function Header() {
   );
 
   // Helper function for icon buttons
-  const IconButton = ({ href, iconSrc, notificationCount = null }) => (
+  const IconButton = ({
+    href,
+    iconSrc,
+    notificationCount = null,
+  }: {
+    href: string;
+    iconSrc: string;
+    notificationCount?: null | number;
+  }) => (
     <button onClick={closeMenu} className="relative">
       <Link href={href}>
         <Image src={iconSrc} width={32} height={32} alt="" />
@@ -105,10 +117,21 @@ function Header() {
                 notificationCount={0}
               />
             </ul>
+            {session ? (
+                  <>
+                      <Link href='/profile'>
+                        <FaRegUserCircle className="hover:text-[#B47B2B] text-4xl duration-200" />
+                      </Link>
+                        
+                  </>
+                ) : (
+               
+                   <Link href='/sign-in'>
+                        <FaRegUserCircle className="hover:text-[#B47B2B] text-4xl duration-200" />
+                      </Link>
+                )}
 
-            <button onClick={closeMenu}>
-              <FaRegUserCircle className="hover:text-[#B47B2B] text-4xl duration-200" />
-            </button>
+            
 
             <Link href={"/contact"} className="max-md:hidden">
               <ButtonPrimary onClick={closeMenu} label="Contact Us" />
@@ -117,7 +140,10 @@ function Header() {
             <div className="xl:hidden relative">
               <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DropdownMenuTrigger asChild>
-                  <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="outline-none flex items-center justify-center rounded focus:ring-2 focus:ring-gold-text">
+                  <button
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="outline-none flex items-center justify-center rounded focus:ring-2 focus:ring-gold-text"
+                  >
                     <IoMenu size={32} />
                   </button>
                 </DropdownMenuTrigger>
@@ -126,7 +152,9 @@ function Header() {
                     <DropdownMenuItem
                       key={title}
                       className={`font-open-sans text-xl font-normal cursor-pointer px-14 ${
-                        pathname === link ? "text-[#231867]" : "text-[#292D32]"
+                        pathname === link
+                          ? "text-[#231867]"
+                          : "text-[#292D32]"
                       } hover:text-[#B47B2B]`}
                     >
                       <Link href={link} onClick={closeMenu}>
@@ -143,5 +171,3 @@ function Header() {
     </header>
   );
 }
-
-export default Header;
